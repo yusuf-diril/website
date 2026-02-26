@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sükût — Yazılarım</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Bodoni+Moda:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Fraunces:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Marck+Script&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Prata&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-head">
+    <div class="wrap head-inner">
+      <a href="../index.html" class="site-signature">münzevî</a>
+      <nav class="site-nav">
+        <a href="../index.html">Yazılar</a>
+        <a href="../sukut.html">Sükût</a>
+        <a href="../index.html#hakkimda">Hakkımda</a>
+        <a href="../index.html#iletisim">İletişim</a>
+      </nav>
+      
+      <button type="button" class="theme-toggle" aria-label="Gece modu">🌙</button>
+    </div>
+  </header>
+  <main class="main">
+
+    <div class="wrap main-inner">
+
+    <div class="sukut-page">
+      <p class="sukut-word">Sükût</p>
+      <p class="sukut-alt">Bazen sadece susmak gerekir.</p>
+    </div>
+    </div>
+  </main>
+  <footer class="site-foot">
+    <div class="wrap foot-inner">
+      <p class="foot-quote">Söylenmiş ve söylenmemiş her ne varsa, <span class="secret-word" tabindex="0" role="button" data-secret="Sükût da bir cevaptır. Bazen en derin olanı." aria-label="Gizli">sükûtun</span> o derin kuyusuna emanet…</p>
+      <p class="foot-meta">
+        <span class="moon-phase" aria-hidden="true"></span>
+        <label class="ambient-label"><input type="checkbox" class="ambient-toggle" aria-label="Gece sesi"> Gece sesi</label>
+      </p>
+    </div>
+  </footer>
+  <div id="secret-overlay" class="secret-overlay" role="dialog" aria-hidden="true">
+    <p class="secret-overlay-text"></p>
+    <button type="button" class="secret-overlay-close">×</button>
+  </div>
+  <audio id="ambient-audio" preload="none" aria-hidden="true"></audio>
+  
+  <script src="../js/main.js"></script>
+</body>
+</html>

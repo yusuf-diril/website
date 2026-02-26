@@ -1,0 +1,1526 @@
+/* ============================================================
+   Yazılarım v4 — Bir sayfa gibi. Ruh, sükût, farklılık.
+   ============================================================ */
+
+/* --- Açık: sitem.html uyumlu, daha az sarı, yumuşak kontrast --- */
+:root {
+  --bg: #f9f7f1;
+  --bg-page: #faf9f6;
+  --text: #4a4038;
+  --text-soft: #5c5248;
+  --muted: #5c5c66;
+  --accent: #8b6914;
+  --accent-light: #a67c52;
+  --border: #e0ddd6;
+  /* Defter / şiir / mektup denemesi: el yazısı fontlar */
+  --hero: 'Patrick Hand', 'Cormorant Garamond', Georgia, cursive;
+  --body: 'Shadows Into Light', 'Patrick Hand', Georgia, cursive;
+  --signature: 'Marck Script', 'Great Vibes', Georgia, cursive;
+  /* Dergi / Didone Display: anasayfa İçindekiler */
+  --display: 'Bodoni Moda', Georgia, serif;
+  --width: 38rem;
+  --space: 1.5rem;
+  --line-height: 1.9;
+  --line-height-prose: 1.85;
+  --fog-bottom: linear-gradient(to top, rgba(249, 247, 241, 0.92) 0%, transparent 65%);
+}
+
+/* --- Gece: Derin koyu mavi, mum ışığı --- */
+[data-theme="dark"] {
+  --bg: #080c14;
+  --fog-bottom: linear-gradient(to top, rgba(8, 12, 20, 0.92) 0%, transparent 65%);
+  --bg-page: #0a0e18;
+  --text: #e6e2dc;
+  --text-soft: #c4bfb6;
+  --muted: #8a8580;
+  --accent: #c9a227;
+  --accent-light: #ddb83d;
+  --border: #1e2433;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 19px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  font-weight: 400;
+  line-height: var(--line-height);
+  color: var(--text);
+  background: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.5s ease, color 0.4s ease;
+}
+
+/* Anasayfa: sayfa sabit, slider ile kaydırma */
+body.index-body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.main.index-main {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero yıldızları: anasayfa içeriğinin tamamını kaplar, arkada katman */
+.hero.hero-index {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.hero.hero-index .hero-divider {
+  pointer-events: none;
+}
+
+.main.index-main .main-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.index-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.yazi-slider-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+
+.yazi-slider-track {
+  --slide-index: 0;
+  height: calc(100% * var(--total-slides));
+  transform: translateY(calc(-100% * var(--slide-index) / var(--total-slides)));
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.yazi-slider-viewport .yazi-satirlar {
+  scroll-snap-type: none;
+  max-width: var(--width);
+  margin: 0 auto;
+  height: 100%;
+  display: block;
+}
+
+.yazi-slider-track .yazi-satirlar {
+  height: 100%;
+}
+
+/* Her slide tam viewport yüksekliğinde, dikey ortada */
+.yazi-slider-viewport .yazi-satir {
+  height: calc(100% / var(--total-slides));
+  min-height: 0;
+  scroll-snap-align: unset;
+  scroll-snap-stop: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 1.75rem var(--space);
+  gap: 2rem;
+}
+
+[data-theme="dark"] body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* --- Sayfa yüklenme: sitem.html gibi fade-in --- */
+.main-inner {
+  animation: pageFadeIn 1.8s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Sayfa geçişi: sade fade --- */
+body.page-turn-out .main {
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+
+body.page-enter-ready .main {
+  opacity: 0;
+}
+
+body.page-enter .main {
+  opacity: 1;
+  transition: opacity 0.28s ease-out;
+}
+
+/* --- Header: imza + sessiz navigasyon --- */
+.site-head {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: background 0.5s ease, border-color 0.4s ease;
+}
+
+.head-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space);
+  max-width: var(--width);
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+.site-signature {
+  font-family: var(--signature);
+  font-size: 1.65rem;
+  font-weight: 400;
+  color: var(--text);
+  transition: opacity 0.32s ease;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+}
+
+.site-signature:hover {
+  color: var(--accent);
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.5rem;
+  font-family: var(--body);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.site-nav a:hover {
+  color: var(--accent);
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15rem;
+  padding: 0.4rem;
+  opacity: 0.7;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.theme-toggle:hover {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+[data-theme="dark"] .theme-toggle {
+  filter: invert(1);
+}
+
+/* --- Ana sütun: sayfa hissi --- */
+.wrap {
+  max-width: var(--width);
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
+
+.main {
+  flex: 1;
+}
+
+.main-inner {
+  padding: 3rem 0 4rem;
+}
+
+/* --- Hero: yıldızlar + ayırıcı --- */
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem var(--space) 5rem;
+  overflow: hidden;
+}
+
+/* Anasayfada hero kompakt: slider’a yer kalsın */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 30%, rgba(166, 124, 82, 0.04) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+[data-theme="dark"] .hero-bg {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 25%, rgba(201, 162, 39, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(100, 120, 160, 0.03) 0%, transparent 40%);
+}
+
+/* Gece: yıldızlar — katmanlı, animasyonlu --- */
+.hero-stars::before,
+.hero-stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.hero-stars::before {
+  background-image:
+    radial-gradient(2.5px 2.5px at 10% 15%, rgba(255,255,255,0.95), transparent),
+    radial-gradient(2px 2px at 85% 25%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2.5px 2.5px at 70% 60%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 25% 75%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(2px 2px at 48% 42%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 92% 70%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1.5px 1.5px at 8% 55%, rgba(255,255,255,0.7), transparent);
+}
+
+.hero-stars::after {
+  background-image:
+    radial-gradient(2px 2px at 55% 20%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(2.5px 2.5px at 30% 50%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 75% 80%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 90% 45%, rgba(255,255,255,0.75), transparent);
+}
+
+[data-theme="dark"] .hero-stars::before {
+  opacity: 1;
+  animation: twinkle-a 2.8s ease-in-out infinite;
+}
+
+[data-theme="dark"] .hero-stars::after {
+  opacity: 1;
+  animation: twinkle-b 2.8s ease-in-out infinite 1.4s;
+}
+
+@keyframes twinkle-a {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes twinkle-b {
+  0%, 100% { opacity: 0.7; transform: scale(1.05); }
+  50% { opacity: 0.4; transform: scale(1); }
+}
+
+/* Hero alıntı — daha küçük, zarif --- */
+.hero-quote {
+  position: relative;
+  z-index: 1;
+  font-family: var(--hero);
+  font-size: clamp(1.15rem, 3.2vw, 1.6rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--text-soft);
+  max-width: 28ch;
+  margin: 0;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  animation: heroReveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+}
+
+@keyframes heroReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pul — yazı içinde, mektup sayfasındaki gibi; okunaklı boyut --- */
+/* Pul: başlık ile metin arasında, kendi satırında */
+.yazi-pul {
+  display: block;
+  float: none;
+  width: 168px !important;
+  height: auto !important;
+  max-width: 168px !important;
+  max-height: 208px !important;
+  object-fit: contain;
+  margin: 0 auto 1.5rem;
+  border-radius: 2px;
+  opacity: 0.92;
+  transform: rotate(2deg);
+}
+
+[data-theme="dark"] .yazi-pul {
+  opacity: 0.88;
+}
+
+@media (max-width: 640px) {
+  .yazi-pul {
+    width: 144px !important;
+    max-width: 144px !important;
+    max-height: 176px !important;
+    margin-bottom: 1.25rem;
+  }
+}
+
+/* Hero divider: sitem.html tarzı yumuşak gradient --- */
+.hero-divider {
+  position: relative;
+  z-index: 1;
+  width: 10rem;
+  height: 1px;
+  margin-top: 3rem;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.18), transparent);
+  border: 0;
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .hero-divider {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+  opacity: 0.9;
+}
+
+/* --- Bölüm başlıkları --- */
+.section {
+  margin-bottom: 3rem;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-family: var(--hero);
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 2rem;
+  padding-bottom: 0.5rem;
+}
+
+/* --- v4 Yazı listesi: şiir gibi, numaralı --- */
+.yazi-listesi-v4 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: yazi-num;
+}
+
+.yazi-listesi-v4 li {
+  counter-increment: yazi-num;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition: opacity 0.55s ease, transform 0.55s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.yazi-listesi-v4 li.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.yazi-listesi-v4 li::before {
+  content: counter(yazi-num);
+  font-family: var(--hero);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-right: 1rem;
+  min-width: 1.5em;
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.yazi-listesi-v4 a {
+  display: inline-block;
+  padding: 1rem 0;
+  font-family: var(--hero);
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+  border-left: 2px solid transparent;
+  padding-left: 0.25rem;
+  margin-left: -0.25rem;
+}
+
+.yazi-listesi-v4 a:hover {
+  color: var(--accent);
+  padding-left: 0.75rem;
+  border-left-color: var(--accent);
+}
+
+/* --- Anasayfa: tam ekran slider — kaydırınca sonraki yazı yukarı gelir, pul alanı en az 1/4 --- */
+.yazi-satirlar {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  max-width: var(--width);
+  margin: 0 auto;
+}
+
+.yazi-satir {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.75rem var(--space);
+  box-sizing: border-box;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  max-width: var(--width);
+  margin: 0 auto;
+}
+
+.yazi-satir.pul-sag {
+  flex-direction: row;
+}
+
+.yazi-satir.pul-sol {
+  flex-direction: row-reverse;
+}
+
+.satir-metin {
+  flex: 1;
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(64px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: 0 50%;
+}
+
+.yazi-satir.pul-sag .satir-metin {
+  transform: translateY(64px) rotate(-0.35deg);
+}
+
+.yazi-satir.pul-sol .satir-metin {
+  transform: translateY(64px) rotate(0.3deg);
+}
+
+.yazi-satir.in-view .satir-metin {
+  opacity: 1;
+}
+
+.yazi-satir.pul-sag.in-view .satir-metin {
+  transform: translateY(0) rotate(-0.35deg);
+}
+
+.yazi-satir.pul-sol.in-view .satir-metin {
+  transform: translateY(0) rotate(0.3deg);
+}
+
+.yazi-satir:first-child .satir-metin {
+  opacity: 1;
+}
+
+.yazi-satir.pul-sag:first-child .satir-metin {
+  transform: translateY(0) rotate(-0.35deg);
+}
+
+.yazi-satir.pul-sol:first-child .satir-metin {
+  transform: translateY(0) rotate(0.3deg);
+}
+
+.yazi-satir.in-view .satir-metin {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.satir-pul {
+  flex: 0 0 25%;
+  min-width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(52px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.06s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
+}
+
+.yazi-satir.in-view .satir-pul {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.yazi-satir.pul-sag .satir-pul {
+  transform: translateY(52px) rotate(0.4deg);
+}
+
+.yazi-satir.pul-sol .satir-pul {
+  transform: translateY(52px) rotate(-0.35deg);
+}
+
+.yazi-satir.pul-sag.in-view .satir-pul,
+.yazi-satir.pul-sag:first-child .satir-pul {
+  transform: translateY(0) rotate(0.4deg);
+}
+
+.yazi-satir.pul-sol.in-view .satir-pul,
+.yazi-satir.pul-sol:first-child .satir-pul {
+  transform: translateY(0) rotate(-0.35deg);
+}
+
+.yazi-satir:first-child .satir-metin,
+.yazi-satir:first-child .satir-pul {
+  opacity: 1;
+}
+
+.satir-pul img {
+  width: 100%;
+  max-width: 100%;
+  max-height: 55vh;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.12));
+  transform-origin: center center;
+}
+
+.yazi-satir.pul-sag .satir-pul img {
+  transform: rotate(1.4deg);
+}
+
+.yazi-satir.pul-sol .satir-pul img {
+  transform: rotate(-1.3deg);
+}
+
+[data-theme="dark"] .satir-pul img {
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
+}
+
+.satir-baslik {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.75rem;
+  letter-spacing: 0.02em;
+  transform-origin: 0 0.2em;
+}
+
+.yazi-satir.pul-sag .satir-baslik {
+  transform: rotate(-1deg);
+}
+
+.yazi-satir.pul-sol .satir-baslik {
+  transform: rotate(0.9deg);
+}
+
+.satir-baslik a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.satir-baslik a:hover {
+  color: var(--accent);
+}
+
+.satir-ozet {
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0 0 1.25rem;
+  max-width: 32em;
+  transform-origin: 0 0.3em;
+}
+
+.yazi-satir.pul-sag .satir-ozet {
+  transform: rotate(0.5deg);
+}
+
+.yazi-satir.pul-sol .satir-ozet {
+  transform: rotate(-0.6deg);
+}
+
+.satir-oku {
+  font-family: var(--display);
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, letter-spacing 0.2s ease;
+}
+
+.satir-oku:hover {
+  color: var(--text);
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 45rem) {
+  .yazi-satir {
+    flex-direction: column !important;
+    gap: 1.5rem;
+    padding: 2.5rem var(--space);
+  }
+
+  .yazi-satir.pul-sol .satir-pul {
+    order: -1;
+  }
+
+  .satir-pul {
+    flex: 0 0 28%;
+    min-width: 28%;
+  }
+
+  .satir-pul img {
+    max-height: 45vh;
+  }
+
+  .satir-baslik {
+    font-size: 1.3rem;
+  }
+}
+
+.index-alt {
+  max-width: var(--width);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 var(--space);
+}
+
+/* Anasayfa: Hakkımda / İletişim başlıkları Didone */
+.index-page .section-title {
+  font-family: var(--display);
+  letter-spacing: 0.2em;
+}
+
+/* Eski liste (yazi sayfası vb.) --- */
+.yazi-listesi-edebi {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.yazi-listesi-edebi li {
+  border-bottom: 1px solid var(--border);
+}
+
+.yazi-listesi-edebi a {
+  display: block;
+  padding: 1rem 0;
+  font-family: var(--hero);
+  font-size: 1.15rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.yazi-listesi-edebi a:hover {
+  color: var(--accent);
+}
+
+/* --- Geri linki --- */
+.nav {
+  margin-bottom: var(--space);
+  font-size: 0.9rem;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.nav a:hover {
+  color: var(--accent);
+}
+
+/* Font drawer: sağdan açılır, Aa ile toggle */
+.font-drawer-toggle {
+  font-family: var(--display);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.font-drawer-toggle:hover {
+  color: var(--accent);
+}
+
+.font-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 18rem;
+  max-width: 85vw;
+  height: 100%;
+  z-index: 50;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+  transform: translateX(100%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow-y: auto;
+}
+
+.font-drawer[aria-hidden="false"],
+.font-drawer.is-open {
+  transform: translateX(0);
+}
+
+[data-theme="dark"] .font-drawer {
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
+}
+
+.font-drawer-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.font-drawer-close:hover {
+  color: var(--text);
+}
+
+.font-drawer-inner {
+  padding: 3rem 1.5rem 2rem;
+}
+
+.font-drawer-inner .reading-font-wrap {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.25rem;
+  margin-bottom: 0;
+}
+
+.font-drawer-inner .reading-option {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+/* Yazı sayfası: font + boyut seçici (drawer içinde) */
+.reading-font-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.reading-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reading-font-label {
+  font-family: var(--body);
+}
+
+.reading-font-select {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.reading-font-select:hover,
+.reading-font-select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* İçerik (gövde) yazı boyutu — sadece .prose */
+.yazi-page[data-prose-size="small"] .prose {
+  font-size: 0.95rem;
+}
+
+.yazi-page[data-prose-size="normal"] .prose {
+  font-size: 1.1rem;
+}
+
+.yazi-page[data-prose-size="large"] .prose {
+  font-size: 1.25rem;
+}
+
+/* 5 font seçeneği: başlık + gövde */
+.yazi-page[data-reading-font="patrick-hand"] .yazi-baslik,
+.yazi-page[data-reading-font="patrick-hand"] .prose,
+.yazi-page[data-reading-font="patrick-hand"] .prose .char-reveal {
+  font-family: 'Patrick Hand', cursive !important;
+}
+
+.yazi-page[data-reading-font="shadows-into-light"] .yazi-baslik,
+.yazi-page[data-reading-font="shadows-into-light"] .prose,
+.yazi-page[data-reading-font="shadows-into-light"] .prose .char-reveal {
+  font-family: 'Shadows Into Light', cursive !important;
+}
+
+.yazi-page[data-reading-font="marck-script"] .yazi-baslik,
+.yazi-page[data-reading-font="marck-script"] .prose,
+.yazi-page[data-reading-font="marck-script"] .prose .char-reveal {
+  font-family: 'Marck Script', cursive !important;
+}
+
+.yazi-page[data-reading-font="caveat"] .yazi-baslik,
+.yazi-page[data-reading-font="caveat"] .prose,
+.yazi-page[data-reading-font="caveat"] .prose .char-reveal {
+  font-family: 'Caveat', cursive !important;
+}
+
+.yazi-page[data-reading-font="bad-script"] .yazi-baslik,
+.yazi-page[data-reading-font="bad-script"] .prose,
+.yazi-page[data-reading-font="bad-script"] .prose .char-reveal {
+  font-family: 'Bad Script', cursive !important;
+}
+
+.yazi-page[data-reading-font="cormorant-garamond"] .yazi-baslik,
+.yazi-page[data-reading-font="cormorant-garamond"] .prose,
+.yazi-page[data-reading-font="cormorant-garamond"] .prose .char-reveal {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+}
+
+.yazi-page[data-reading-font="fraunces"] .yazi-baslik,
+.yazi-page[data-reading-font="fraunces"] .prose,
+.yazi-page[data-reading-font="fraunces"] .prose .char-reveal {
+  font-family: 'Fraunces', Georgia, serif !important;
+}
+
+.yazi-page[data-reading-font="playfair-display-italic"] .yazi-baslik,
+.yazi-page[data-reading-font="playfair-display-italic"] .prose,
+.yazi-page[data-reading-font="playfair-display-italic"] .prose .char-reveal {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+}
+
+.yazi-page[data-reading-font="prata"] .yazi-baslik,
+.yazi-page[data-reading-font="prata"] .prose,
+.yazi-page[data-reading-font="prata"] .prose .char-reveal {
+  font-family: 'Prata', Georgia, serif !important;
+}
+
+.yazi-page[data-reading-font="bodoni-moda"] .yazi-baslik,
+.yazi-page[data-reading-font="bodoni-moda"] .prose,
+.yazi-page[data-reading-font="bodoni-moda"] .prose .char-reveal {
+  font-family: 'Bodoni Moda', Georgia, serif !important;
+}
+
+/* Anasayfa: font ve boyut seçici — liste başlıkları, bölüm başlıkları, .prose */
+.index-page .reading-font-wrap {
+  margin-bottom: 2rem;
+}
+
+.index-page[data-prose-size="small"] .yazi-listesi-v4 a,
+.index-page[data-prose-size="small"] .prose {
+  font-size: 0.95rem;
+}
+
+.index-page[data-prose-size="normal"] .yazi-listesi-v4 a,
+.index-page[data-prose-size="normal"] .prose {
+  font-size: 1rem;
+}
+
+.index-page[data-prose-size="large"] .yazi-listesi-v4 a,
+.index-page[data-prose-size="large"] .prose {
+  font-size: 1.15rem;
+}
+
+.index-page[data-reading-font="patrick-hand"] .section-title,
+.index-page[data-reading-font="patrick-hand"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="patrick-hand"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="patrick-hand"] .prose {
+  font-family: 'Patrick Hand', cursive !important;
+}
+
+.index-page[data-reading-font="shadows-into-light"] .section-title,
+.index-page[data-reading-font="shadows-into-light"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="shadows-into-light"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="shadows-into-light"] .prose {
+  font-family: 'Shadows Into Light', cursive !important;
+}
+
+.index-page[data-reading-font="marck-script"] .section-title,
+.index-page[data-reading-font="marck-script"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="marck-script"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="marck-script"] .prose {
+  font-family: 'Marck Script', cursive !important;
+}
+
+.index-page[data-reading-font="caveat"] .section-title,
+.index-page[data-reading-font="caveat"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="caveat"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="caveat"] .prose {
+  font-family: 'Caveat', cursive !important;
+}
+
+.index-page[data-reading-font="bad-script"] .section-title,
+.index-page[data-reading-font="bad-script"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="bad-script"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="bad-script"] .prose {
+  font-family: 'Bad Script', cursive !important;
+}
+
+.index-page[data-reading-font="cormorant-garamond"] .section-title,
+.index-page[data-reading-font="cormorant-garamond"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="cormorant-garamond"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="cormorant-garamond"] .prose {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+}
+
+.index-page[data-reading-font="fraunces"] .section-title,
+.index-page[data-reading-font="fraunces"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="fraunces"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="fraunces"] .prose {
+  font-family: 'Fraunces', Georgia, serif !important;
+}
+
+.index-page[data-reading-font="playfair-display-italic"] .section-title,
+.index-page[data-reading-font="playfair-display-italic"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="playfair-display-italic"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="playfair-display-italic"] .prose {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+}
+
+.index-page[data-reading-font="prata"] .section-title,
+.index-page[data-reading-font="prata"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="prata"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="prata"] .prose {
+  font-family: 'Prata', Georgia, serif !important;
+}
+
+.index-page[data-reading-font="bodoni-moda"] .section-title,
+.index-page[data-reading-font="bodoni-moda"] .yazi-listesi-v4 a,
+.index-page[data-reading-font="bodoni-moda"] .yazi-listesi-v4 li::before,
+.index-page[data-reading-font="bodoni-moda"] .prose {
+  font-family: 'Bodoni Moda', Georgia, serif !important;
+}
+
+/* Yazı sayfası: altta sisli katman — kaydırdıkça yazılar belirir */
+.yazi-page::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45vh;
+  background: var(--fog-bottom);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Yazı sayfası --- */
+.yazi {
+  margin: 0;
+}
+
+/* Yazı başlığı: ortalanmış, sitem.html tipografisi */
+.yazi-baslik {
+  font-family: var(--hero);
+  font-size: clamp(1.75rem, 4vw, 2.2rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.35;
+  letter-spacing: 0.5px;
+  margin: 0 0 1.25rem;
+  text-align: center;
+  color: var(--text);
+}
+
+/* Başlık altı divider: sitem.html gradient çizgi */
+.yazi-divider {
+  width: 100%;
+  max-width: 20rem;
+  height: 1px;
+  margin: 0 auto 1.75rem;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.15), transparent);
+  border: 0;
+}
+
+[data-theme="dark"] .yazi-divider {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.prose {
+  font-size: 1.1rem;
+  line-height: var(--line-height-prose);
+  color: var(--text-soft);
+}
+
+.prose p {
+  margin: 0 0 1.4em;
+  text-align: justify;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Yazı sayfası: defter doğallığı — her paragraf farklı eğim / kayma (belirgin) */
+.yazi-page .prose p {
+  transform-origin: 0 0.4em;
+}
+
+.yazi-page .prose p:nth-child(5n+1) {
+  transform: rotate(-0.5deg) translateY(-1px);
+}
+
+.yazi-page .prose p:nth-child(5n+2) {
+  transform: rotate(0.55deg) translateY(0.8px);
+}
+
+.yazi-page .prose p:nth-child(5n+3) {
+  transform: rotate(-0.35deg) translateY(0.5px);
+}
+
+.yazi-page .prose p:nth-child(5n+4) {
+  transform: rotate(0.65deg) translateY(-0.6px);
+}
+
+.yazi-page .prose p:nth-child(5n) {
+  transform: rotate(-0.6deg) translateY(0.7px);
+}
+
+.yazi-page .prose p:last-child {
+  transform: rotate(0.25deg) translateY(-0.3px);
+}
+
+/* Daktilo: aşağı kaydıkça paragraf karakter karakter yazılıyormuş gibi */
+.yazi-page .prose .char-reveal {
+  display: inline;
+  opacity: 0;
+  animation: typeIn 0.12s forwards;
+  animation-play-state: paused;
+}
+
+.yazi-page .prose p.typing .char-reveal {
+  animation-play-state: running;
+}
+
+@keyframes typeIn {
+  to { opacity: 1; }
+}
+
+/* Son paragraf: kapanış cümlesi vurgusu (tipografik estetik) */
+.prose p:last-of-type {
+  margin-top: 0.5em;
+  font-style: italic;
+  opacity: 0.92;
+  letter-spacing: 0.01em;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose h2 {
+  font-family: var(--hero);
+  font-size: 1.28rem;
+  font-weight: 400;
+  margin: 2.25rem 0 0.75rem;
+  color: var(--text);
+}
+
+.prose h3 {
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.prose ul,
+.prose ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin: 0.45em 0;
+}
+
+/* Alıntı / vurgulu blok: duygusal yoğunluk için tipografi */
+.prose blockquote {
+  margin: 2rem 0;
+  padding: 0.75rem 0 0.75rem 1.5rem;
+  border-left: 3px solid var(--accent);
+  color: var(--text-soft);
+  font-style: italic;
+  opacity: 0.95;
+  font-size: 1.02em;
+  line-height: 1.9;
+}
+
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.12), transparent);
+  margin: 2.25rem 0;
+}
+
+[data-theme="dark"] .prose hr {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-light);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.prose a:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.75rem 0;
+  border-radius: 2px;
+}
+
+.prose code {
+  font-family: var(--body);
+  font-size: 0.9em;
+  background: var(--bg-page);
+  padding: 0.15em 0.4em;
+  border-radius: 2px;
+}
+
+/* Drop cap: ilk paragrafın ilk harfi --- */
+/* İlk harf büyük; yanındaki satırla uyumlu */
+.prose.dropcap > p:first-of-type::first-letter {
+  font-family: var(--hero);
+  font-size: 3.2em;
+  line-height: 0;
+  float: left;
+  margin: 0.05em 0.12em 0 0;
+  color: var(--accent);
+}
+
+/* Yazı sonu: rastgele öneri --- */
+.belki-bunu-da-oku {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.belki-bunu-da-oku a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-light);
+}
+
+.belki-bunu-da-oku a:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+/* --- Footer: tek cümle --- */
+.site-foot {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+  transition: border-color 0.4s ease;
+}
+
+/* Footer: alıntı sade ve zarif */
+.foot-quote {
+  font-family: var(--body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 auto 1rem;
+  max-width: 24rem;
+  text-align: center;
+  opacity: 0.82;
+  hyphens: none;
+}
+
+.foot-social {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.foot-social-link {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.foot-social-link:hover {
+  color: var(--accent);
+}
+
+.foot-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.moon-phase {
+  font-size: 1rem;
+}
+
+.ambient-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.ambient-toggle {
+  cursor: pointer;
+}
+
+/* Gizli kelimeler (yazı içi + footer) --- */
+.secret-word {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.secret-word:hover {
+  color: var(--accent);
+}
+
+/* --- Gizli kelime overlay --- */
+.secret-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space);
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.secret-overlay[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.secret-overlay-text {
+  font-family: var(--hero);
+  font-size: 1.35rem;
+  font-style: italic;
+  color: var(--text);
+  text-align: center;
+  max-width: 20ch;
+  margin: 0;
+}
+
+.secret-overlay-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+}
+
+.secret-overlay-close:hover {
+  color: var(--text);
+}
+
+/* --- Sükût sayfası: tek kelime --- */
+.sukut-page {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.sukut-word {
+  font-family: var(--hero);
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  font-weight: 400;
+  color: var(--text-soft);
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.sukut-alt {
+  font-family: var(--body);
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 1rem 0 0;
+  font-style: italic;
+}
+
+/* --- Yazdırma --- */
+@media print {
+  body {
+    background: #fff;
+    background-image: none;
+  }
+
+  .site-head,
+  .theme-toggle,
+  .foot-social,
+  .foot-meta,
+  .secret-overlay {
+    display: none !important;
+  }
+
+  .main-inner {
+    padding: 0;
+  }
+
+  .site-foot {
+    border-top: 1px solid #ccc;
+  }
+
+  .foot-quote {
+    color: #333;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+
+  .hero-bg,
+  .hero-stars::after {
+    display: none;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #666;
+  }
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  html {
+    font-size: 18px;
+  }
+
+  .wrap,
+  .head-inner {
+    padding: 0 1.25rem;
+  }
+
+  .site-signature {
+    font-size: 1.4rem;
+  }
+
+  .site-nav {
+    gap: 1.25rem;
+  }
+
+  .hero {
+    min-height: 75vh;
+    padding: 3rem 1.25rem 4rem;
+  }
+
+  .hero-quote {
+    max-width: none;
+  }
+
+  .main-inner {
+    padding: 2.5rem 0 3rem;
+  }
+
+  .section-title {
+    letter-spacing: 0.12em;
+    margin-bottom: 1.5rem;
+  }
+
+  .yazi-listesi-v4 a {
+    font-size: 1.05rem;
+  }
+
+  .yazi-baslik {
+    margin-bottom: 1.4rem;
+  }
+
+  .prose {
+    font-size: 1.05rem;
+  }
+}
